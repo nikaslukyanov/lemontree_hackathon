@@ -1,5 +1,5 @@
 import { MapContainer, TileLayer, CircleMarker, Tooltip } from 'react-leaflet'
-import { getRiskLabel } from '../utils/mlScoring'
+import { getRiskLabel, isClosedToday } from '../utils/mlScoring'
 import { useTranslation } from '../hooks/useTranslation'
 
 export default function MapView({ resources, clusterMap = {}, height = '400px' }) {
@@ -42,6 +42,7 @@ export default function MapView({ resources, clusterMap = {}, height = '400px' }
                   {cluster?.label && <span>📍 {cluster.label}</span>}
                   {desc ? <span><br />{desc.slice(0, 80)}…</span> : ''}
                   {r.openByAppointment ? <span><br />📅 {t('openByAppointment')}</span> : ''}
+                  {isClosedToday(r) ? <span><br />🔒 Closed Today</span> : ''}
                 </div>
               </Tooltip>
             </CircleMarker>

@@ -3,7 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 
 import { MapPin, Shield, AlertTriangle, Eye } from 'lucide-react'
 import { useFilteredResources } from '../hooks/useResources'
 import { useTranslation } from '../hooks/useTranslation'
-import { clusterResources, computeBarrierIndex } from '../utils/mlScoring'
+import { clusterResources, computeBarrierIndex, isClosedToday } from '../utils/mlScoring'
 import FilterBar from '../components/FilterBar'
 import MapView from '../components/MapView'
 import ExportButton from '../components/ExportButton'
@@ -55,7 +55,9 @@ export default function GovDashboard() {
   }, [data])
 
   const capacityData = useMemo(() => {
-    const atCapacity = data.filter(r => !r.occurrences?.some(o => !o.skippedAt)).length
+    const atCapacity = data.filter(r =>
+      !r.occurrences?.some(o => !o.skippedAt) || isClosedToday(r)
+    ).length
     const total = data.length || 1
     return [
       { name: 'At Capacity', value: atCapacity, pct: ((atCapacity / total) * 100).toFixed(1) },

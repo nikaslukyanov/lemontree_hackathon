@@ -39,6 +39,14 @@ export function computeBarrierIndex(resource) {
   return Math.min(parseFloat(raw.toFixed(2)), 1)
 }
 
+export function isClosedToday(resource) {
+  const now = new Date()
+  return (resource.occurrenceSkipRanges ?? []).some(range => {
+    if (range.archivedAt) return false
+    return now >= new Date(range.startTime) && now <= new Date(range.endTime)
+  })
+}
+
 export function clusterResources(resources, k = 4) {
   const pts = resources
     .filter(r => r.latitude && r.longitude)

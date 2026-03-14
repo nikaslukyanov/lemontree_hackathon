@@ -9,6 +9,7 @@ import { useTranslation } from '../hooks/useTranslation'
 import FilterBar from '../components/FilterBar'
 import MapView from '../components/MapView'
 import RiskBadge from '../components/RiskBadge'
+import { isClosedToday } from '../utils/mlScoring'
 import ExportButton from '../components/ExportButton'
 import ResourceReviews from '../components/ResourceReviews'
 import SentimentPanel from '../components/SentimentPanel'
@@ -221,6 +222,11 @@ export default function FoodBankDashboard() {
                 {selectedResource.openByAppointment && (
                   <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full mt-1.5 inline-block">
                     📅 {t('openByAppointment')}
+                  </span>
+                )}
+                {isClosedToday(selectedResource) && (
+                  <span className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full mt-1.5 inline-block">
+                    🔒 Closed Today
                   </span>
                 )}
               </div>
