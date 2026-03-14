@@ -28,7 +28,9 @@ export function useResources(apiParams = {}) {
   })
 
   const enriched = useMemo(
-    () => raw.map(r => ({ ...r, riskScore: computeRiskScore(r) })),
+    () => raw
+      .filter(r => !r.mergedToResourceId)
+      .map(r => ({ ...r, riskScore: computeRiskScore(r) })),
     [raw]
   )
 
