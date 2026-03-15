@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
-import { fetchResources } from '../api/lemontree'
+import { fetchAllResources } from '../api/lemontree'
 import { computeRiskScore } from '../utils/mlScoring'
 
 export function useResources(apiParams = {}) {
@@ -8,21 +8,9 @@ export function useResources(apiParams = {}) {
 
   const { data: raw = [], isLoading, error } = useQuery({
     queryKey: ['resources', JSON.stringify(apiParams)],
-    queryFn: async () => {
-      let cursor
-      let all = []
-      let total = null
-      do {
-        const data = await fetchResources({ take: 100, ...apiParams, ...(cursor ? { cursor } : {}) })
-        const resources = data.resources ?? []
-        if (total === null) total = data.count ?? 0
-        all = [...all, ...resources]
-        setProgress(Math.round((all.length / Math.max(total, 1)) * 100))
-        cursor = data.cursor
-        if (all.length >= Math.min(total, 500)) break
-      } while (cursor)
-      return all
-    },
+    queryFn: () => fetchAllResources(apiParams, (loaded, total) => {
+      setProgress(Math.round((loaded / Math.max(total, 1)) * 100))
+    }),
     staleTime: 1000 * 60 * 10,
     retry: 2,
   })
